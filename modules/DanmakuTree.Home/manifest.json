@@ -1,0 +1,12 @@
+{
+  "id": "6d443ea8-54ba-4a27-be2e-c4ab474c3230",
+  "name": "弹幕树主页",
+  "description": "弹幕树主页",
+  "preview": [],
+  "version": "0.0.1",
+  "type": 0,
+  "embed": "./embed.vue",
+  "permission": [
+    "0"
+  ]
+}
