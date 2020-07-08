@@ -5,7 +5,7 @@
   "preview": [],
   "version": "0.0.1",
   "type": 0,
-  "embed": "./embed.vue",
+  "externalWindow": "./embed.vue",
   "permission": [
     "0"
   ]

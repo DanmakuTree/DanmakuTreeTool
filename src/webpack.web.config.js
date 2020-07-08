@@ -113,9 +113,6 @@ function getConfig(name, entry, mode = "production") {
       }),
     ],
     resolve: {
-      alias: {
-        vue$: 'vue/dist/vue.esm.js'
-      },
       extensions: ['.js', '.vue', '.json', '.css'],
     }
   }
