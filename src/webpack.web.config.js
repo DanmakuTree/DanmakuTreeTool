@@ -99,11 +99,6 @@ function getConfig(name, entry, mode = "production") {
         },
       ],
     },
-    node: {
-      __dirname: isDevMode,
-      __filename: isDevMode,
-      fs: 'empty',
-    },
     plugins: [
       // new WriteFilePlugin(),
       new VueLoaderPlugin(),
@@ -113,7 +108,10 @@ function getConfig(name, entry, mode = "production") {
       }),
     ],
     resolve: {
-      extensions: ['.js', '.vue', '.json', '.css'],
+      modules: ['node_modules']
+    },
+    resolveLoader: {
+      modules: [ path.join(__dirname, '../node_modules') ]
     }
   }
   /**
