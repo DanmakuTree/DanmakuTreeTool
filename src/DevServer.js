@@ -30,7 +30,7 @@ class DevServer {
   }
 
   async __init() {
-    var fileList = await fs.readdir(this.sourcePath)
+    var fileList = (await fs.readdir(this.sourcePath)).filter((e)=>{return e!=='dist'})
 
     var isModuleResult = await Promise.all(fileList.map((e) => {
       return isModule(path.resolve(this.sourcePath, e))
