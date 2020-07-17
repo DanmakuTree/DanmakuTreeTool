@@ -15,7 +15,7 @@ const {
   Server
 } = require('ws')
 
-const ignorelist=['dist','node_modules','.git',"package.json",'.gitignore','.vscode','readme.md']
+const ignorelist=['dist','node_modules','.git',"package.json",'.gitignore','.vscode','readme.md','.github']
 
 class DevServer {
   constructor(sourcePath = '.') {
