@@ -53,12 +53,17 @@ class DevServer {
       host: '127.0.0.1',
       port: '8370'
     })
-    this.app.get('/module/list', (req, res) => {
+    this.app.get('/module/list', async (req, res) => {
+      if(!this.inited){
+        await this.__init
+      }
       var result = this.moduleList.map((e) => {
         var manifest = cloneDeep(e.manifest)
         var entries = ['embed', 'externalWindow', 'web']
         entries.forEach((e) => {
           if (manifest[e]) {
+            manifest[e].js=url.resolve("http://127.0.0.1:8369/static",manifest[e].js)
+            manifest[e].css=url.resolve("http://127.0.0.1:8369/static",manifest[e].css)
             manifest[e].reloadNotice = `ws://127.0.0.1:8370/reloadNotice?module=${manifest.id}`
           }
         })
@@ -94,6 +99,25 @@ class DevServer {
     })
   }
 
+  watch(){
+    this.moduleList.forEach((e)=>{
+      e.watch()
+    })
+  }
+
+  build(){
+    if(typeof this.inited !== 'boolean'){
+      this.inited.then(()=>{
+        this.moduleList.forEach((e)=>{
+          e.build()
+        })
+      })
+    }else{
+      this.moduleList.forEach((e)=>{
+        e.build()
+      })
+    }
+  }
   async addModule(filepath) {
     var manifest = await fs.readFile(path.resolve(this.sourcePath, filepath, 'manifest.json'))
     if (!this.idMap[manifest.id]) {
@@ -101,7 +125,11 @@ class DevServer {
     } else {
       console.log(`"${this.idMap[manifest.id]}" and "${filepath}" has same Id. Please Change It`)
     }
-    this.moduleList.push(new ModuleComplier(this.sourcePath, filepath, this.memoryfs))
+    this.moduleList.push(new ModuleComplier({
+      sourcePath:this.sourcePath,
+      modulePath:filepath,
+      memoryfs:this.memoryfs
+    }))
   }
 }
 

@@ -11,15 +11,17 @@ const getConfig = require('./webpack.web.config')
 const webpack = require('webpack')
 
 class ModuleComplier extends EventEmitter {
-  constructor(sourcePath, modulePath, memoryfs) {
+  constructor(options) {
     super()
     this.manifest = {}
     this.InputManifest = {}
-    this.modulePath = modulePath
+    this.modulePath = options.modulePath
     this.complier = null
     this.watching = null
-    this.moduleBase = path.resolve(sourcePath, modulePath)
-    this.manifestFile = path.resolve(sourcePath, modulePath, 'manifest.json')
+    this.memoryfs=options.memoryfs
+    this.moduleBase = path.resolve(options.sourcePath, options.modulePath)
+    this.manifestFile = path.resolve(options.sourcePath, options.modulePath, 'manifest.json')
+    this.entry=null
     this.debounce = debounce(this.readManifest.bind(this), 1000)
     this.debounce()
   }
@@ -33,29 +35,56 @@ class ModuleComplier extends EventEmitter {
       if (this.InputManifest.embed) {
         entry.embed = path.resolve(this.moduleBase, this.InputManifest.embed)
         this.manifest.embed = {
-          css: `http://127.0.0.1:8369/static/${this.manifest.id}/${this.manifest.id}.embed.css`,
-          js: `http://127.0.0.1:8369/static/${this.manifest.id}/${this.manifest.id}.embed.js`
+          css: `${this.manifest.id}/${this.manifest.id}.embed.css`,
+          js: `${this.manifest.id}/${this.manifest.id}.embed.js`
         }
       }
       if (this.InputManifest.externalWindow) {
         entry.externalWindow = path.resolve(this.moduleBase, this.InputManifest.externalWindow)
         this.manifest.externalWindow = {
-          css: `http://127.0.0.1:8369/static/${this.manifest.id}/${this.manifest.id}.externalWindow.css`,
-          js: `http://127.0.0.1:8369/static/${this.manifest.id}/${this.manifest.id}.externalWindow.js`
+          css: `${this.manifest.id}/${this.manifest.id}.externalWindow.css`,
+          js: `${this.manifest.id}/${this.manifest.id}.externalWindow.js`
         }
       }
       if (this.InputManifest.web) {
         entry.web = path.resolve(this.moduleBase, this.InputManifest.web)
         this.manifest.web = {
-          css: `http://127.0.0.1:8369/static/${this.manifest.id}/${this.manifest.id}.web.css`,
-          js: `http://127.0.0.1:8369/static/${this.manifest.id}/${this.manifest.id}.web.js`
+          css: `${this.manifest.id}/${this.manifest.id}.web.css`,
+          js: `${this.manifest.id}/${this.manifest.id}.web.js`
         }
       }
+      this.entry=entry
     }
-    if (this.complier !== null) {
+  }
+  async build(){
+    if (this.watching !== null) {
       this.watching.close()
     }
-    this.complier = webpack(getConfig(this.manifest.id, entry, 'development'))
+    this.complier = webpack(getConfig(this.manifest.id, this.entry, 'production'))
+    this.complier.run((err, stats) => {
+      if (err || stats.hasErrors()) {
+        console.log(stats.toString({
+          chunks: false,
+          colors: true
+        }));
+      } else if (stats.hasWarnings()) {
+        this.emit('done')
+        console.log(stats.toString({
+          chunks: false,
+          colors: true
+        }));
+      } else {
+        this.emit('done')
+        console.info(`Complete ${this.manifest.id}`)
+      }
+    })
+  }
+  async watch(){
+    if (this.watching !== null) {
+      this.watching.close()
+    }
+    this.complier = webpack(getConfig(this.manifest.id, this.entry, 'development'))
+    this.complier.outputFileSystem=this.memoryfs
     this.watching = this.complier.watch({
       aggregateTimeout: 300,
       poll: undefined

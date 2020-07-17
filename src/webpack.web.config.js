@@ -103,8 +103,8 @@ function getConfig(name, entry, mode = "production") {
       // new WriteFilePlugin(),
       new VueLoaderPlugin(),
       new MiniCssExtractPlugin({
-        filename: `${name}.[name].css`,
-        chunkFilename: `${name}.[name].css`,
+        filename: isDevMode ? `${name}.[name].css` : `${name}.[name].[hash].css`,
+        chunkFilename: isDevMode ? `${name}.[name].css` : `${name}.[name].[hash].css`,
       }),
     ],
     resolve: {

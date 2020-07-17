@@ -12,6 +12,7 @@ switch (process.argv[2]) {
     if (typeof server.inited !== 'boolean') {
       server.inited.then(() => {
         server.listen()
+        server.watch()
       })
     }
     break;

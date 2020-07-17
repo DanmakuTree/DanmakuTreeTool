@@ -7,12 +7,12 @@ npm i -g
 
 ## 使用方法
 
+运行开发服务器
 ```
-danmakutreetool dev .\modules\
+danmakutreetool dev [sourcepath=.]
 ```
 
-由于npm在windows下回创建danmakutreetool.ps1，然而大部分并不允许运行ps1文件，可能需要写为
-
+构建模块
 ```
-danmakutreetool.cmd dev .\modules\
+danmakutreetool build [sourcepath=.]
 ```
