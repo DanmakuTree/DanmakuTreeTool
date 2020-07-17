@@ -15,6 +15,7 @@ const {
   Server
 } = require('ws')
 
+const ignorelist=['dist','node_modules','.git',"package.json",'.gitignore','.vscode','readme.md']
 
 class DevServer {
   constructor(sourcePath = '.') {
@@ -30,7 +31,7 @@ class DevServer {
   }
 
   async __init() {
-    var fileList = (await fs.readdir(this.sourcePath)).filter((e)=>{return e!=='dist'})
+    var fileList = (await fs.readdir(this.sourcePath)).filter((e)=>{return ignorelist.indexOf(e)=== -1})
 
     var isModuleResult = await Promise.all(fileList.map((e) => {
       return isModule(path.resolve(this.sourcePath, e))
