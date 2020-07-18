@@ -15,7 +15,7 @@ const {
   Server
 } = require('ws')
 
-const ignorelist=['dist','node_modules','.git',"package.json",'.gitignore','.vscode','readme.md','.github']
+const ignorelist=['dist','node_modules',"package.json",'readme.md']
 
 class DevServer {
   constructor(sourcePath = '.') {
@@ -31,7 +31,7 @@ class DevServer {
   }
 
   async __init() {
-    var fileList = (await fs.readdir(this.sourcePath)).filter((e)=>{return ignorelist.indexOf(e)=== -1})
+    var fileList = (await fs.readdir(this.sourcePath)).filter((e)=>{ return !e.startsWith(".") && ignorelist.indexOf(e) === -1})
 
     var isModuleResult = await Promise.all(fileList.map((e) => {
       return isModule(path.resolve(this.sourcePath, e))
@@ -63,8 +63,8 @@ class DevServer {
         var entries = ['embed', 'externalWindow', 'web']
         entries.forEach((e) => {
           if (manifest[e]) {
-            manifest[e].js=url.resolve("http://127.0.0.1:8369/static",manifest[e].js)
-            manifest[e].css=url.resolve("http://127.0.0.1:8369/static",manifest[e].css)
+            manifest[e].js=url.resolve("http://127.0.0.1:8369/static/",manifest[e].js)
+            manifest[e].css=url.resolve("http://127.0.0.1:8369/static/",manifest[e].css)
             manifest[e].reloadNotice = `ws://127.0.0.1:8370/reloadNotice?module=${manifest.id}`
           }
         })
@@ -75,7 +75,14 @@ class DevServer {
 
     this.app.use('/static', (req, res, next) => {
       try {
-        res.send(memoryfs.readFileSync(req.path))
+        var file=this.memoryfs.readFileSync(path.resolve(this.sourcePath, 'dist', req.path.startsWith("/") ? req.path.slice(1) : req.path))
+        if(req.path.endsWith('.css')){
+          res.set('Content-Type','text/css')
+        }
+        if(req.path.endsWith('.js')){
+          res.set('Content-Type','text/javascript')
+        }
+        res.send(file)
       } catch (error) {
         next('route')
       }
@@ -106,17 +113,28 @@ class DevServer {
     })
   }
 
-  build(){
+  async build(){
+    var manifests=[]
     if(typeof this.inited !== 'boolean'){
       this.inited.then(()=>{
         this.moduleList.forEach((e)=>{
-          e.build()
+          return e.build().then((stats)=>{
+            console.log(stats.hash)
+          })
         })
+        fs.writeFile('dist/manifest.json',JSON.stringify(manifests))
       })
     }else{
       this.moduleList.forEach((e)=>{
-        e.build()
+        return new Promise((res,rej)=>{
+          e.build(res)
+        }).then((stat)=>{
+          debugger
+        }).catch((err)=>{
+          
+        })
       })
+      fs.writeFile('dist/manifest.json',JSON.stringify(manifests))
     }
   }
   async addModule(filepath) {

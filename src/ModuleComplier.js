@@ -61,22 +61,27 @@ class ModuleComplier extends EventEmitter {
       this.watching.close()
     }
     this.complier = webpack(getConfig(this.manifest.id, this.entry, 'production'))
-    this.complier.run((err, stats) => {
-      if (err || stats.hasErrors()) {
-        console.log(stats.toString({
-          chunks: false,
-          colors: true
-        }));
-      } else if (stats.hasWarnings()) {
-        this.emit('done')
-        console.log(stats.toString({
-          chunks: false,
-          colors: true
-        }));
-      } else {
-        this.emit('done')
-        console.info(`Complete ${this.manifest.id}`)
-      }
+    return new Promise((res,rej)=>{
+      this.complier.run((err, stats) => {
+        if (err || stats.hasErrors()) {
+          console.log(stats.toString({
+            chunks: false,
+            colors: true
+          }));
+          rej(err)
+        } else if (stats.hasWarnings()) {
+          this.emit('done')
+          console.log(stats.toString({
+            chunks: false,
+            colors: true
+          }));
+          res(stats)
+        } else {
+          this.emit('done')
+          console.info(`Complete ${this.manifest.id}`)
+          res(stats)
+        }
+      })
     })
   }
   async watch(){
