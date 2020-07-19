@@ -1,38 +1,56 @@
 {
   "type": "object",
   "properties": {
+    "$schema": {
+      "description": "The json schema of this file"
+    },
     "id": {
-      "type": "string"
+      "type": "string",
+      "title": "An UUID to identify this module.",
+      "description": "This UUID should be unique for every modules",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The name of this module"
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "description": "The description fo this module"
     },
     "version": {
-      "type": "string"
+      "type": "string",
+      "examples": [
+        "0.0.1"
+      ]
     },
     "embed": {
-      "type": "string"
+      "type": "string",
+      "description": "entry of embed"
     },
     "externalWindow": {
-      "type": "string"
+      "type": "string",
+      "description": "entry of externalWindow"
     },
     "web": {
-      "type": "string"
+      "type": "string",
+      "description": "entry of web"
     },
-    "permission": {
+    "permissions": {
+      "title": "Permissions",
+      "description": "The permission requied by this module",
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "default": []
     }
   },
   "required": [
     "id",
     "name",
     "description",
-    "version"
+    "version",
+    "permissions"
   ]
 }
