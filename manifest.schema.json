@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "embed": {
+      "type": "string"
+    },
+    "externalWindow": {
+      "type": "string"
+    },
+    "web": {
+      "type": "string"
+    },
+    "permission": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "description",
+    "version"
+  ]
+}
