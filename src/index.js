@@ -3,8 +3,8 @@
 var DevServer = require('./DevServer.js')
 
 switch (process.argv[2]) {
-  case "dev":
-    var path = '.';
+  case 'dev':
+    var path = '.'
     if (process.argv.length >= 4) {
       path = process.argv[3]
     }
@@ -15,15 +15,15 @@ switch (process.argv[2]) {
         server.watch()
       })
     }
-    break;
+    break
   case 'build':
-    var path = '.';
+    var path = '.'
     if (process.argv.length >= 4) {
       path = process.argv[3]
     }
-    (new DevServer(path)).build();
-    break;
+    (new DevServer(path)).build()
+    break
   default:
-    console.log('Usage: danmakutreetool [action]\n\nAction:\ndev [source]\t\t\t\tstart development server\nbuild [source] [dist]\t\t\tbuild module');
-    break;
+    console.log('Usage: danmakutreetool [action]\n\nAction:\ndev [source]\t\t\t\tstart development server\nbuild [source] [dist]\t\t\tbuild module')
+    break
 }
