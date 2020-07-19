@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var DevServer = require('./DevServer.js')
+const { v4 } = require('uuid')
 
 switch (process.argv[2]) {
   case 'dev':
@@ -23,7 +24,10 @@ switch (process.argv[2]) {
     }
     (new DevServer(path)).build()
     break
+  case 'uuid':
+    console.log(v4())
+    break
   default:
-    console.log('Usage: danmakutreetool [action]\n\nAction:\ndev [source]\t\t\t\tstart development server\nbuild [source] [dist]\t\t\tbuild module')
+    console.log('Usage: danmakutreetool [action]\n\nAction:\ndev [source]\t\t\t\tstart development server\nbuild [source] [dist]\t\t\tbuild module\nuuid\t\t\t\t\tget an UUIDv4')
     break
 }
