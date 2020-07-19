@@ -161,7 +161,7 @@ class DevServer {
   }
 
   async addModule (filepath) {
-    var manifest = await fs.readFile(path.resolve(this.sourcePath, filepath, 'manifest.json'))
+    var manifest = JSON.parse(await fs.readFile(path.resolve(this.sourcePath, filepath, 'manifest.json'), { encoding: 'utf-8' }))
     if (!this.idMap[manifest.id]) {
       this.idMap[manifest.id] = filepath
     } else {

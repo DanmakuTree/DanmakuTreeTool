@@ -27,9 +27,10 @@ class ModuleComplier extends EventEmitter {
   }
 
   async readManifest () {
-    var json = await fs.readFile(this.manifestFile)
+    var json = await fs.readFile(this.manifestFile, { encoding: 'utf-8' })
     this.InputManifest = JSON.parse(json)
     this.manifest = cloneDeep(this.InputManifest)
+    delete this.manifest.$schema
     var entry = {}
     if (typeof this.InputManifest === 'object') {
       if (this.InputManifest.embed) {
