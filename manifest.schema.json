@@ -44,6 +44,22 @@
         "type": "string"
       },
       "default": []
+    },
+    "icon": {
+      "title": "Icon",
+      "description": "Icon of this module. If fail to load, it will be fall back to auto generate.",
+      "type": "string",
+      "format": "uri"
+    },
+    "iconColor": {
+      "title": "color of icon",
+      "description": "The color of auto generate module icon.",
+      "type": "string",
+      "format": "rgbcolor",
+      "pattern": "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"
+    },
+    "defaultConfig": {
+      "type": "object"
     }
   },
   "required": [
