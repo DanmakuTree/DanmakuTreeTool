@@ -127,7 +127,7 @@ class DevServer {
             entries.forEach((entry) => {
               if (typeof danmakuTreeModule.manifest[entry] !== 'undefined') {
                 danmakuTreeModule.manifest[entry].css = danmakuTreeModule.manifest[entry].css.replace('.css', `.${hash}.css`)
-                danmakuTreeModule.manifest[entry].js = danmakuTreeModule.manifest[entry].css.replace('.js', `.${hash}.js`)
+                danmakuTreeModule.manifest[entry].js = danmakuTreeModule.manifest[entry].js.replace('.js', `.${hash}.js`)
               }
             })
             manifests.push(danmakuTreeModule.manifest)
