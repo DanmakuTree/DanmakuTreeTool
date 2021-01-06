@@ -13,7 +13,7 @@
   "author": "",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chalk": "^4.0.0",
     "css-loader": "^3.5.3",
     "express": "^4.17.1",
